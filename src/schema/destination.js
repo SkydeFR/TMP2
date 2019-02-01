@@ -22,6 +22,10 @@ const destinationSchema = new Schema({
   events: [{
     type: Schema.ObjectId,
     ref: 'Event',
+  }],
+  types: [{
+    type: Schema.ObjectId,
+    ref: 'Type',
   }]
 });
 

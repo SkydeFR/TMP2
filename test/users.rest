@@ -10,7 +10,10 @@ content-type: application/json
   "username": "Dracoctix",
   "password": "password",
   "email": "dracoctix@outlook.fr",
-  "phone": "0620167498"
+  "phone": "0620167498",
+  "tour": [
+    "a", "b"
+  ]
 }
 
 #######
@@ -36,13 +39,16 @@ GET {{host}}:{{port}}/admin/users/list HTTP/1.1
   ?token={{token}}
 
 #######
-POST {{host}}:{{port}}/admin/type/add HTTP/1.1
+POST {{host}}:{{port}}/admin/types/add HTTP/1.1
 Content-Type: application/json
 
 {
   "token": "{{token}}",
   "nom": "Anniversaire"
 }
+
+#####
+GET {{host}}:{{port}}/types/get HTTP/1.1
 
 # #######
 # GET {{host}}:{{port}}/admin/users/list HTTP/1.1
@@ -54,3 +60,32 @@ Content-Type: application/json
 
 # token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNGI0NDJiMGVkMDNlMjliMDdlY2ZmNCIsInVzZXJuYW1lIjoiRHJhY29jdGl4IiwiYWRtaW4iOnRydWUsImV4cCI6MTU0ODQzNjY3NzQ2NiwiaWF0IjoxNTQ4NDM2NjY3fQ.6yH6fjVweVQLedoA5yEAUtQRCuT7L1pmq6YJ0SpUdFs
 # &id={{id}}
+#####
+POST {{host}}:{{port}}/admin/destinations/add HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{token}}",
+  "lieu": "Tours jumelles",
+  "debut": "2001-09-11",
+  "fin": "2001-09-12",
+  "description": "Allahu Akbar !",
+  "types": [
+    "5c549b32d998462208e36b72"
+  ]
+}
+
+#
+#####
+GET {{host}}:{{port}}/destinations/get HTTP/1.1
+
+#####
+POST {{host}}:{{port}}/events/add HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{token}}",
+  "date": "2019-03-05",
+  "type": "5c549b32d998462208e36b72",
+  "destination": "5c54b14639c92b0c64f76c62"
+}

@@ -9,13 +9,13 @@ const testtoken = require('../util/testtoken');
 /* GET users listing. */
 router.post('/signup', function(req, res) {
   console.log(req.body);
-  if(!req.body.username || !req.body.email || !req.body.password || !req.body.phone) {
+  if(!req.body.prenom || !req.body.nom || !req.body.email || !req.body.password || !req.body.phone) {
     res.status(400).json({
       code: 'invalid_request',
     });
   }
   else {
-    adduser({username: req.body.username, email: req.body.email, password: req.body.password, phone: req.body.phone })
+    adduser({prenom: req.body.prenom, nom: req.body.nom, email: req.body.email, password: req.body.password, phone: req.body.phone })
       .then((user) => {
         user.save()
           .then(() => {

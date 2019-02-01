@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const _ = require('underscore');
+const {isValid} = require('mongoose').Types.ObjectId;
 
 // const {ObjectId} = require('mongoose').Types;
 
@@ -86,7 +88,7 @@ router.get('/users/list', (req, res) => {
   });
 });
 
-router.post('/type/add', (req, res) => {
+router.post('/types/add', (req, res) => {
   if(!req.body.nom) {
     res.status(400).json({code: 'invalid_request'});
   }
@@ -115,13 +117,13 @@ router.post('/type/add', (req, res) => {
   }
 });
 
-router.post('/destination/add', (req, res) => {
-  if(!req.body.lieu || !req.body.debut || !req.body.fin || req.body.description) {
+router.post('/destinations/add', (req, res) => {
+  if(!req.body.lieu || !req.body.debut || !req.body.fin || !req.body.description || !req.body.types || !(req.body.types instanceof Array)) {
     res.status(400).json({code: 'invalid_request'});
   }
   else {
-    const debut = Date.parse(req.body.datedebut);
-    const fin = Date.parse(req.body.datefin);
+    const debut = Date.parse(req.body.debut);
+    const fin = Date.parse(req.body.fin);
     if(!debut) {
       res.status(400).json({code: 'invalid_start_date'});
     }
@@ -130,18 +132,41 @@ router.post('/destination/add', (req, res) => {
     }
     else {
       Destination.findOne({lieu: req.body.lieu}).exec()
-        .then(lieu => {
-          if(!lieu) {
+        .then(async lieu => {
+          if(lieu) {
             res.status(400).json({code: 'existing_place'});
           }
           else {
-            const destination = new Destination({debut, fin, lieu: req.body.lieu, description: req.body.description});
-            destination.save()
-              .then(destination => res.status(200).json({code: 'success', destination}))
-              .catch(err => {
+            if((_.filter(req.body.types, (element) => !isValid(element))).length !== 0) {
+              res.status(400).json({code: 'invalid_type_ids'});
+            }
+            else {
+              try {
+                const listeTypes = await Promise.all(req.body.types.map(id => Type.findById(id).exec()));
+                if(listeTypes.length < req.body.types.length) {
+                  res.status(400).json({code: 'invalid_type_ids'});
+                }
+                else {
+                  const destination = new Destination({debut, fin, lieu: req.body.lieu, description: req.body.description, types: req.body.types});
+                  destination.save()
+                    .then(async destination => {
+                      await Promise.all(listeTypes.map(type => {
+                        type.destinations.push(destination._id);
+                        return type.save();
+                      }));
+                      res.status(200).json({code: 'success', destination});
+                    })
+                    .catch(err => {
+                      console.error(err);
+                      res.status(500).json({code: 'internal_error'});
+                    });
+                }
+              }
+              catch(err) {
                 console.error(err);
                 res.status(500).json({code: 'internal_error'});
-              });
+              }
+            }
           }
         })
         .catch(err => {

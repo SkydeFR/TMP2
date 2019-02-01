@@ -21,13 +21,14 @@ function readInfo(prompt, silent = false) {
 
     await mongooseconnect();
 
-    const username = await readInfo('Nom d\'utilisateur : ');
+    const prenom = await readInfo('Prénom : ');
+    const nom = await readInfo('Nom : ');
     const password = await readInfo('Mot de passe : ', true);
     const email = await readInfo('Adresse mail : ');
     const phone = await readInfo('Numéro de téléphone : ');
 
     try {
-      const user = await adduser({username, email, password, phone});
+      const user = await adduser({prenom, nom, email, password, phone});
       user.admin = true;
       await user.save();
       console.log('Utilisateur ajouté.');
