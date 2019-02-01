@@ -3,7 +3,7 @@
 const {port, host} = require('../config');
 
 // Pass configuration to application
-require('../')({
+require('..')({
   port,
   host
 });

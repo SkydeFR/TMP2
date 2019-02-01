@@ -11,10 +11,11 @@
     "url": "https://github.com/SkydeFR/WSC-Event_Server"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublushOnly": "npm t",
+    "prepare": "npm run build && npm run clear-database && npm run create-admin",
+    "clear-database": "node ./dist/scripts/cleardatabase.js",
+    "create-admin": "node ./dist/scripts/createadmin.js",
     "babel-node": "babel-node --config-file ./.babelrc",
-    "start": "nodemon --exec npm run babel-node -- ./src/bin/wsc-event_server",
+    "start": "nodemon --exec npm run babel-node -- ./src/bin/wsc-event_server.js",
     "build": "babel src -d dist"
   },
   "dependencies": {
