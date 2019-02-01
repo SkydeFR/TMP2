@@ -1,8 +1,9 @@
 #! /usr/bin/env node
-'use strict'
+'use strict';
+const {port, host} = require('../config');
 
 // Pass configuration to application
 require('../')({
-  port: 8000,
-  host: 'localhost'
-})
+  port,
+  host
+});
