@@ -1,9 +1,9 @@
 'use strict';
 const simple = require('./handlers/simple');
-const configured = require('./handlers/configured');
+const users = require('./handlers/users');
 
 module.exports = function (app, opts) {
   // Setup routes, middleware, and handlers
-  app.get('/', simple);
-  app.get('/configured', configured(opts));
+  app.use('/users', users);
+  // app.get('/configured', configured(opts));
 };

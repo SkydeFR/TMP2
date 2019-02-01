@@ -1,6 +1,15 @@
 'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongooseconnect = require('./util/mongooseconnect');
+
+mongooseconnect()
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((err) => {
+    console.error('An error occurred with MongoDB', err);
+  });
 
 module.exports = function main (options, cb) {
   // Set default options

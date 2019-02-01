@@ -1,0 +1,51 @@
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNTQ0YTEzYmUwZjk5NDRhY2M0ZGFjMCIsInVzZXJuYW1lIjoiRHJhY29jdGl4IiwiYWRtaW4iOmZhbHNlLCJleHAiOjE1NDkwMjgzNjgwNzMsImlhdCI6MTU0OTAyODM1OH0.OYmAFi88tnoXjbwmn2OhW1mzAOHLY2-AOgMh49gAay0
+
+@host = http://localhost
+@port = 2345
+
+POST {{host}}:{{port}}/users/signup HTTP/1.1
+content-type: application/json
+
+{
+  "username": "Dracoctix",
+  "password": "password",
+  "email": "dracoctix@outlook.fr",
+  "phone": "0620167498"
+}
+
+#######
+POST {{host}}:{{port}}/users/signin HTTP/1.1
+content-type: application/json
+
+{
+  "email": "dracoctix@outlook.fr",
+  "password": "password"
+}
+
+#######
+GET {{host}}:{{port}}/users/get HTTP/1.1
+  ?token={{token}}
+
+#######
+GET {{host}}:{{port}}/users/get HTTP/1.1
+  ?token={{token}}
+  &id={{id}}
+
+# #######
+# GET {{host}}:{{port}}/admin/pending/count HTTP/1.1
+#   ?token={{token}}
+
+# #######
+# GET {{host}}:{{port}}/admin/users/list HTTP/1.1
+#   ?token={{token}}
+
+# #######
+# GET {{host}}:{{port}}/admin/users/list HTTP/1.1
+#   ?token={{token}}
+#   &options={"status": ["admin"]}
+# #######
+# POST {{host}}:{{port}}/admin/pending/approve HTTP/1.1
+# content-type: application/x-www-form-urlencoded
+
+# token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNGI0NDJiMGVkMDNlMjliMDdlY2ZmNCIsInVzZXJuYW1lIjoiRHJhY29jdGl4IiwiYWRtaW4iOnRydWUsImV4cCI6MTU0ODQzNjY3NzQ2NiwiaWF0IjoxNTQ4NDM2NjY3fQ.6yH6fjVweVQLedoA5yEAUtQRCuT7L1pmq6YJ0SpUdFs
+# &id={{id}}
