@@ -6,7 +6,15 @@ const {User} = require('../schema');
 const adduser = require('../util/adduser');
 const testtoken = require('../util/testtoken');
 
-/* GET users listing. */
+/**
+ * Permet à l'utilisateur de s'inscrire.
+ * Paramètres :
+ * prenom (String) : prénom de l'utilisateur
+ * nom (String) : nom de l'utilisateur
+ * email (String) : email (valide) de l'utilisateur
+ * password (String) : password clair de l'utilisateur
+ * phone (String) : numéro de téléphone de l'utilisateur.
+ */
 router.post('/signup', function(req, res) {
   console.log(req.body);
   if(!req.body.prenom || !req.body.nom || !req.body.email || !req.body.password || !req.body.phone) {
@@ -18,9 +26,10 @@ router.post('/signup', function(req, res) {
     adduser({prenom: req.body.prenom, nom: req.body.nom, email: req.body.email, password: req.body.password, phone: req.body.phone })
       .then((user) => {
         user.save()
-          .then(() => {
+          .then(async (user) => {
             res.status(200).json({
               code: 'success',
+              token: await user.getToken(),
             });
           })
           .catch(err => {
@@ -37,6 +46,12 @@ router.post('/signup', function(req, res) {
   }
 });
 
+/**
+ * Permet à l'utilisateur de se connecter.
+ * Paramètres :
+ * email (String) : adresse mail
+ * password (String) : mot de passe en clair
+ */
 router.post('/signin', async (req, res) => {
   try {
     if(!req.body.email || !req.body.password) {
@@ -81,6 +96,13 @@ router.post('/signin', async (req, res) => {
   }
 });
 
+/**
+ * Permet d'obtenir les informations d'un utilisateur.
+ * Paramètres :
+ * token (String) : Token de l'utilisateur
+ * id (ID sous forme de String) : Identifiant de l'utilisateur (facultatif, si non spécifié, retourne les infos de l'utilisateur connecté).
+ * admin (Booléen) : Permet de dire si l'on souhaite davantage d'informations sur l'utilisateur. L'utilisateur dont on envoie le token doit alors ̂être admin (facultatif, faux par défaut).
+ */
 router.get('/get', (req, res) => {
   if(!req.query.token) {
     res.status(400).json({code: 'invalid_request'});

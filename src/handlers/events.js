@@ -7,6 +7,14 @@ const {isValid} = ObjectId;
 const {Type, Destination, Event, User} = require('../schema');
 const testtoken = require('../util/testtoken');
 
+/**
+ * Permet d'ajouter un événement.
+ * Paramètres :
+ * token (String) : Token de l'utilisateur
+ * date (Date ISO (String)) : Date de l'événement
+ * type (ID de type (String)) : ID du type que l'on souhaite (anniversaire, and so on)
+ * destination (ID de type (String)) : ID de la destination que l'on souhaite
+ */
 router.post('/add', (req, res) => {
   if(!req.body.token || !req.body.date || !req.body.type || !req.body.destination || !isValid(req.body.type) || !isValid(req.body.destination)) {
     res.status(400).json({code: 'invalid_request'});

@@ -9,6 +9,10 @@ const {User, Type, Destination} = require('../schema');
 
 const testadmin = require('../util/testadmin');
 
+/**
+ * TOUTES LES FONCTIONS ADMIN NÉCESSITENT DE PASSER UN PARAMÈTRE TOKEN CONTENANT LE TOKEN DE L'USER.
+ */
+
 function verifAdminGet(req, res, next) {
   if(!req.query.token) {
     res.status(400).json({code: 'invalid_request'});
@@ -55,6 +59,11 @@ router.get(verifAdminGet);
 
 router.post(verifAdminPost);
 
+/**
+ * Permet de compter les utilisateurs.
+ * Paramètres :
+ * options (facultatif) : objet contenant un attribut 'status', contenant soit 'admin', soit 'all', soit 'users', en fonction de ce que l'on veut compter (défaut : 'all')
+ */
 router.get('/users/count', (req, res) => {
   console.log(req.query);
   const {status} = stringToOptions(req.query.options, {status: 'all'});
@@ -70,6 +79,11 @@ router.get('/users/count', (req, res) => {
   });
 });
 
+/**
+ * Permet de lister les utilisateurs.
+ * Paramètres :
+ * options (facultatif) : objet contenant un attribut 'status', contenant soit 'admin', soit 'all', soit 'users', en fonction de ce que l'on veut lister (défaut : 'all')
+ */
 router.get('/users/list', (req, res) => {
   const {status} = stringToOptions(req.query.options, {
     status: 'all',
@@ -88,6 +102,11 @@ router.get('/users/list', (req, res) => {
   });
 });
 
+/**
+ * Permet d'ajouter un type
+ * Paramètres :
+ * nom : String : nom du type.
+ */
 router.post('/types/add', (req, res) => {
   if(!req.body.nom) {
     res.status(400).json({code: 'invalid_request'});
@@ -117,6 +136,14 @@ router.post('/types/add', (req, res) => {
   }
 });
 
+/**
+ * Permet d'ajouter une destination
+ * Paramètres :
+ * lieu : String : Nom du lieu
+ * debut : Date ISO (String) : Date de début dans l'histoire
+ * fin : Date ISO (String) : Date de fin dans l'histoire
+ * types : Tableau des IDs de types compatibles
+ */
 router.post('/destinations/add', (req, res) => {
   if(!req.body.lieu || !req.body.debut || !req.body.fin || !req.body.description || !req.body.types || !(req.body.types instanceof Array)) {
     res.status(400).json({code: 'invalid_request'});
