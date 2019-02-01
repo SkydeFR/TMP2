@@ -10,6 +10,9 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+
+
+
 rl.question('Êtes-vous sûr de vouloir vider la base de données ? [y/N] ', (answer) => {
   if(answer.toUpperCase() === 'Y') {
     console.log('Suppression en cours...');
@@ -19,7 +22,9 @@ rl.question('Êtes-vous sûr de vouloir vider la base de données ? [y/N] ', (an
           if(err)
             console.error('An error occured during users cleaning : ', err);
           else {
-            fini();
+            console.log('La base de données a été vidée.');
+            rl.close();
+            process.exit(0);
           }
         });
       })
@@ -31,8 +36,3 @@ rl.question('Êtes-vous sûr de vouloir vider la base de données ? [y/N] ', (an
     console.log('Aucune modification n\'a été effectuée.');
   }
 });
-
-function fini() {
-  console.log('La base de données a été vidée.');
-  rl.close();
-}

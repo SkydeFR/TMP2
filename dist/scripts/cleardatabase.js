@@ -21,7 +21,9 @@ rl.question('Êtes-vous sûr de vouloir vider la base de données ? [y/N] ', ans
     mongooseconnect().then(() => {
       User.deleteMany({}, err => {
         if (err) console.error('An error occured during users cleaning : ', err);else {
-          fini();
+          console.log('La base de données a été vidée.');
+          rl.close();
+          process.exit(0);
         }
       });
     }).catch(err => {
@@ -31,8 +33,3 @@ rl.question('Êtes-vous sûr de vouloir vider la base de données ? [y/N] ', ans
     console.log('Aucune modification n\'a été effectuée.');
   }
 });
-
-function fini() {
-  console.log('La base de données a été vidée.');
-  rl.close();
-}

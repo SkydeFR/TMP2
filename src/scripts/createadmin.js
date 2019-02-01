@@ -24,13 +24,14 @@ function readInfo(prompt, silent = false) {
     const username = await readInfo('Nom d\'utilisateur : ');
     const password = await readInfo('Mot de passe : ', true);
     const email = await readInfo('Adresse mail : ');
+    const phone = await readInfo('Numéro de téléphone : ');
 
     try {
-      const user = await adduser({username, email, password, description: ''});
-      user.status = 'admin';
+      const user = await adduser({username, email, password, phone});
+      user.admin = true;
       await user.save();
       console.log('Utilisateur ajouté.');
-      return;
+      process.exit(0);
     }
     catch(err) {
       console.log('Une erreur est survenue : ' + err.text);

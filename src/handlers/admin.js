@@ -91,7 +91,7 @@ router.post('/type/add', (req, res) => {
     res.status(400).json({text: 'invalid_request'});
   }
   else {
-    Type.find({nom: req.body.nom}).exec()
+    Type.findOne({nom: req.body.nom}).exec()
       .then(type => {
         if(type) {
           res.status(400).json({code: 'existing_type'});
@@ -99,7 +99,9 @@ router.post('/type/add', (req, res) => {
         else {
           const type = new Type({nom: req.body.nom});
           type.save()
-            .then(type => res.status(200).json({code: 'success', type}))
+            .then(type => {
+              res.status(200).json({code: 'success', type});
+            })
             .catch(err => {
               console.error(err);
               res.status(500).json({code: 'internal_error'});
@@ -109,9 +111,12 @@ router.post('/type/add', (req, res) => {
       .catch(err => {
         console.error(err);
         res.status(500).json({code: 'internal_error'});
-      })
+      });
   }
-})
+});
 
+router.post('/destination/add', (req, res) => {
+  // if(!req.body.nom || !)
+});
 
 module.exports = router;
