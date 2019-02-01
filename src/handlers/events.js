@@ -39,13 +39,13 @@ router.post('/add', (req, res) => {
                   try {
                     const savedevent = await event.save();
                     const {user, type, destination} = savedevent;
-                    const userFull = await User.findByIdAndUpdate(user, {
+                    await User.findByIdAndUpdate(user, {
                       $push: {events: savedevent._id}
                     });
-                    const typeFull = await Type.findByIdAndUpdate(type, {
+                    await Type.findByIdAndUpdate(type, {
                       $push: {events: savedevent._id}
                     });
-                    const destinationFull = await Destination.findByIdAndUpdate(destination, {
+                    await Destination.findByIdAndUpdate(destination, {
                       $push: {events: savedevent._id}
                     });
                     res.status(200).json({code: 'success', event: savedevent});

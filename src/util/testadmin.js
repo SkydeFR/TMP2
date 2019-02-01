@@ -1,5 +1,4 @@
 const testtokenuser = require('./testtokenuser');
-const {User} = require('../schema');
 
 module.exports = (token) => new Promise((resolve, reject) => {
   testtokenuser(token)
