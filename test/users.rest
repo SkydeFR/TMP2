@@ -1,7 +1,7 @@
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNTQ4YmU1YjYzOTJmMzRkMGU0NTM3OCIsInVzZXJuYW1lIjoiRHJhY29jdGl4IiwiYWRtaW4iOnRydWUsImV4cCI6MTU0OTA0NDg2MjA4MiwiaWF0IjoxNTQ5MDQ0ODUyfQ.el4UaaxBsfIc3fkh2GxR3YvKqbQXdMfTd_2K0zp5q9o
 
 @host = http://localhost
-@port = 2345
+@port = 8081
 
 POST {{host}}:{{port}}/users/signup HTTP/1.1
 content-type: application/json

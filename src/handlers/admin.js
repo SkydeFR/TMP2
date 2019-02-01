@@ -3,7 +3,7 @@ const router = express.Router();
 
 // const {ObjectId} = require('mongoose').Types;
 
-const {User, Type} = require('../schema');
+const {User, Type, Destination} = require('../schema');
 
 const testadmin = require('../util/testadmin');
 
@@ -88,7 +88,7 @@ router.get('/users/list', (req, res) => {
 
 router.post('/type/add', (req, res) => {
   if(!req.body.nom) {
-    res.status(400).json({text: 'invalid_request'});
+    res.status(400).json({code: 'invalid_request'});
   }
   else {
     Type.findOne({nom: req.body.nom}).exec()
@@ -116,7 +116,40 @@ router.post('/type/add', (req, res) => {
 });
 
 router.post('/destination/add', (req, res) => {
-  // if(!req.body.nom || !)
+  if(!req.body.lieu || !req.body.debut || !req.body.fin || req.body.description) {
+    res.status(400).json({code: 'invalid_request'});
+  }
+  else {
+    const debut = Date.parse(req.body.datedebut);
+    const fin = Date.parse(req.body.datefin);
+    if(!debut) {
+      res.status(400).json({code: 'invalid_start_date'});
+    }
+    else if(!fin) {
+      res.status(400).json({code: 'invalid_end_date'});
+    }
+    else {
+      Destination.findOne({lieu: req.body.lieu}).exec()
+        .then(lieu => {
+          if(!lieu) {
+            res.status(400).json({code: 'existing_place'});
+          }
+          else {
+            const destination = new Destination({debut, fin, lieu: req.body.lieu, description: req.body.description});
+            destination.save()
+              .then(destination => res.status(200).json({code: 'success', destination}))
+              .catch(err => {
+                console.error(err);
+                res.status(500).json({code: 'internal_error'});
+              });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).json({code: 'internal_error'});
+        });
+    }
+  }
 });
 
 module.exports = router;

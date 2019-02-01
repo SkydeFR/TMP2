@@ -13,6 +13,7 @@ const destinationSchema = new Schema({
   lieu: {
     type: String,
     required: true,
+    unique: true,
   },
   description: {
     type: String,
