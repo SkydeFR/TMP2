@@ -26,7 +26,14 @@ const destinationSchema = new Schema({
   types: [{
     type: Schema.ObjectId,
     ref: 'Type',
-  }]
+    required: false,
+  }],
+  nature: {
+    type: String,
+    required: true,
+    enum: ['temps', 'espace'],
+    default: 'temps',
+  }
 });
 
 /**

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const _ = require('underscore');
 const {isValid} = require('mongoose').Types.ObjectId;
+const stringToOptions = require('../util/stringtooptions');
 
 // const {ObjectId} = require('mongoose').Types;
 
@@ -39,20 +40,6 @@ function verifAdminPost(req, res, next) {
         res.status(err.httpcode).json({code: err.code});
       });
   }
-}
-
-/**
- * Permet de convertir une chaîne de caractères en objet contenant les options avec leurs valeurs par défaut.
- * @return {Object}
- * @param {String} optionsEnter Options sous forme de chaînes de caractères envoyée à l'API. 
- * @param {Object} defaultOptions Options par défaut, sous la forme d'un objet.
- */
-function stringToOptions(optionsEnter, defaultOptions) {
-  const optionsString = optionsEnter ?? '{}';
-  const optionsParam = JSON.parse(optionsString);
-  const options = Object.assign(defaultOptions, optionsParam);
-
-  return options;
 }
 
 router.get(verifAdminGet);
@@ -145,10 +132,11 @@ router.post('/types/add', (req, res) => {
  * types : Tableau des IDs de types compatibles
  */
 router.post('/destinations/add', (req, res) => {
-  if(!req.body.lieu || !req.body.debut || !req.body.fin || !req.body.description || !req.body.types || !(req.body.types instanceof Array)) {
+  if(!req.body.lieu || !req.body.debut || !req.body.fin || !req.body.description || !req.body.nature || !['temps', 'espace'].includes(req.body.nature) || req.body.nature === 'temps' && !(req.body.types instanceof Array)) {
     res.status(400).json({code: 'invalid_request'});
   }
   else {
+    const modeTemps = (req.body.nature === 'temps');
     const debut = Date.parse(req.body.debut);
     const fin = Date.parse(req.body.fin);
     if(!debut) {
@@ -163,8 +151,8 @@ router.post('/destinations/add', (req, res) => {
           if(lieu) {
             res.status(400).json({code: 'existing_place'});
           }
-          else {
-            if((_.filter(req.body.types, (element) => !isValid(element))).length !== 0) {
+          else if(modeTemps) {
+            if(modeTemps && (_.filter(req.body.types, (element) => !isValid(element))).length !== 0) {
               res.status(400).json({code: 'invalid_type_ids'});
             }
             else {
@@ -174,7 +162,7 @@ router.post('/destinations/add', (req, res) => {
                   res.status(400).json({code: 'invalid_type_ids'});
                 }
                 else {
-                  const destination = new Destination({debut, fin, lieu: req.body.lieu, description: req.body.description, types: req.body.types});
+                  const destination = new Destination({debut, fin, lieu: req.body.lieu, description: req.body.description, types: req.body.types, nature: req.body.nature});
                   destination.save()
                     .then(async destination => {
                       await Promise.all(listeTypes.map(type => {
@@ -194,6 +182,17 @@ router.post('/destinations/add', (req, res) => {
                 res.status(500).json({code: 'internal_error'});
               }
             }
+          }
+          else {
+            const destination = new Destination({debut, fin, lieu: req.body.lieu, description: req.body.description, nature: req.body.nature});
+            destination.save()
+              .then(destination => {
+                res.status(200).json({code: 'success', destination});
+              })
+              .catch(err => {
+                console.error(err);
+                res.status(500).json({code:'internal_error'});
+              });
           }
         })
         .catch(err => {
