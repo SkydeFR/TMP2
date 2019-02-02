@@ -15,12 +15,14 @@ const config = require('../config');
 
 
 module.exports = ({
-  username,
+  prenom,
+  nom,
   email,
   password,
   phone
 }) => new Promise(async (resolve, reject) => {
-  username = username.trim();
+  prenom = prenom.trim();
+  nom = nom.trim();
   email = email.trim();
 
   if (!emailValidator.validate(email)) {
@@ -37,27 +39,31 @@ module.exports = ({
     });
   }
 
-  if (username.length < 3) {
+  if (prenom.length < 3) {
     reject({
       code: 400,
-      text: 'invalid_username'
+      text: 'invalid_firstname'
+    });
+  }
+
+  if (nom.length < 3) {
+    reject({
+      code: 400,
+      text: 'invalid_lastname'
     });
   }
 
   try {
     const pass = await bcrypt.hash(password, config.password_salt_rounds);
     const user = {
-      username,
+      prenom,
+      nom,
       password: pass,
       email,
       phone
     };
     User.findOne({
-      $or: [{
-        username: user.username
-      }, {
-        email: user.email
-      }]
+      email: user.email
     }, (err, result) => {
       if (err) {
         console.error(err);
@@ -73,11 +79,6 @@ module.exports = ({
             code: 400,
             text: err.text
           });else resolve(_user);
-        });
-      } else if (result.username === user.username) {
-        reject({
-          code: 400,
-          text: 'used_username'
         });
       } else if (result.email === user.email) {
         reject({

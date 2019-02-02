@@ -16,7 +16,8 @@ const destinationSchema = new Schema({
   },
   lieu: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   description: {
     type: String,
@@ -25,7 +26,18 @@ const destinationSchema = new Schema({
   events: [{
     type: Schema.ObjectId,
     ref: 'Event'
-  }]
+  }],
+  types: [{
+    type: Schema.ObjectId,
+    ref: 'Type',
+    required: false
+  }],
+  nature: {
+    type: String,
+    required: true,
+    enum: ['temps', 'espace'],
+    default: 'temps'
+  }
 });
 /**
  * 

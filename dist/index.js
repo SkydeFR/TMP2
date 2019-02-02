@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 
 const mongooseconnect = require('./util/mongooseconnect');
 
+const cors = require('cors');
+
 mongooseconnect().then(() => {
   console.log('Connected to MongoDB');
 }).catch(err => {
@@ -43,7 +45,8 @@ module.exports = function main(options, cb) {
   process.on('uncaughtException', unhandledError);
   process.on('unhandledRejection', unhandledError); // Create the express app
 
-  const app = express(); // Common middleware
+  const app = express();
+  app.use(cors()); // Common middleware
   // app.use(/* ... */)
 
   app.use(bodyParser.json()); // Register routes

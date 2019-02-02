@@ -16,7 +16,6 @@ const testtoken = require('../util/testtoken');
  * phone (String) : numéro de téléphone de l'utilisateur.
  */
 router.post('/signup', function(req, res) {
-  console.log(req.body);
   if(!req.body.prenom || !req.body.nom || !req.body.email || !req.body.password || !req.body.phone) {
     res.status(400).json({
       code: 'invalid_request',
@@ -80,6 +79,7 @@ router.post('/signin', async (req, res) => {
           });
         }
         else {
+          console.log('token');
           res.status(200).json({
             code: 'success',
             token: await result.getToken(),

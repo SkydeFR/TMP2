@@ -7,13 +7,11 @@ POST {{host}}:{{port}}/users/signup HTTP/1.1
 content-type: application/json
 
 {
-  "username": "Dracoctix",
+  "prenom": "Yan",
+  "nom": "Buatois",
   "password": "password",
   "email": "dracoctix@outlook.fr",
-  "phone": "0620167498",
-  "tour": [
-    "a", "b"
-  ]
+  "phone": "0620167498"
 }
 
 #######

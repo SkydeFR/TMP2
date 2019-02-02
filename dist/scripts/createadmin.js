@@ -24,14 +24,16 @@ function readInfo(prompt, silent = false) {
   try {
     console.log('Bienvenue dans le script d\'ajout d\'administrateur.');
     await mongooseconnect();
-    const username = await readInfo('Nom d\'utilisateur : ');
+    const prenom = await readInfo('Prénom : ');
+    const nom = await readInfo('Nom : ');
     const password = await readInfo('Mot de passe : ', true);
     const email = await readInfo('Adresse mail : ');
     const phone = await readInfo('Numéro de téléphone : ');
 
     try {
       const user = await adduser({
-        username,
+        prenom,
+        nom,
         email,
         password,
         phone

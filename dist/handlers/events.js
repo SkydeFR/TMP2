@@ -5,19 +5,33 @@ const express = require('express');
 const router = express.Router();
 
 const {
+  ObjectId
+} = require('mongoose').Types;
+
+const {
   isValid
-} = require('mongoose').Types.ObjectId;
+} = ObjectId;
 
 const {
   Type,
   Destination,
-  Event
+  Event,
+  User
 } = require('../schema');
 
 const testtoken = require('../util/testtoken');
+/**
+ * Permet d'ajouter un événement.
+ * Paramètres :
+ * token (String) : Token de l'utilisateur
+ * date (Date ISO (String)) : Date de l'événement
+ * type (ID de type (String)) : ID du type que l'on souhaite (anniversaire, and so on)
+ * destination (ID de type (String)) : ID de la destination que l'on souhaite
+ */
 
-router.post('/create', (req, res) => {
-  if (!req.body.token || !req.body.date || !req.body.type || !req.body.destination || isValid(req.body.type) || isValid(req.body.destination)) {
+
+router.post('/add', (req, res) => {
+  if (!req.body.token || !req.body.date || !req.body.type || !req.body.destination || !isValid(req.body.type) || !isValid(req.body.destination)) {
     res.status(400).json({
       code: 'invalid_request'
     });
@@ -41,25 +55,60 @@ router.post('/create', (req, res) => {
               code: 'unknown_destination'
             });
           } else {
-            if (Date.parse(req.body.date)) {
-              const event = new Event({
-                date: req.body.date,
-                user: user._id,
-                type: type._id,
-                destination: destination._id
-              });
-              event.save().then(event => res.status(200).json({
-                code: 'success',
-                event
-              })).catch(error => {
-                console.error(error);
-                res.status(500).json({
-                  code: 'internal_error'
+            const types = destination.types.map(elt => elt.toString());
+
+            if (types.includes(req.body.type)) {
+              if (Date.parse(req.body.date)) {
+                const event = new Event({
+                  debut: req.body.date,
+                  user: user.id,
+                  type: type._id,
+                  destination: destination._id
                 });
-              });
+
+                try {
+                  const savedevent = await event.save();
+                  const {
+                    user,
+                    type,
+                    destination
+                  } = savedevent;
+                  await User.findByIdAndUpdate(user, {
+                    $push: {
+                      events: savedevent._id
+                    }
+                  });
+                  await Type.findByIdAndUpdate(type, {
+                    $push: {
+                      events: savedevent._id
+                    }
+                  });
+                  await Destination.findByIdAndUpdate(destination, {
+                    $push: {
+                      events: savedevent._id
+                    }
+                  });
+                  res.status(200).json({
+                    code: 'success',
+                    event: savedevent
+                  });
+                } catch (err) {
+                  console.error(err);
+                  res.status(500).json({
+                    code: 'internal_error'
+                  });
+                }
+              } else {
+                res.status(400).json({
+                  code: 'invalid_date'
+                });
+              }
             } else {
+              console.log(req.body.type);
+              console.log(types);
+              console.log(types.includes(req.body.type));
               res.status(400).json({
-                code: 'invalid_date'
+                code: 'incompatible_type'
               });
             }
           }
@@ -77,3 +126,4 @@ router.post('/create', (req, res) => {
     });
   }
 });
+module.exports = router;

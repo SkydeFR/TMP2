@@ -15,11 +15,15 @@ const jwt = require('jsonwebtoken');
 const config = require('../config');
 
 const usersSchema = new Schema({
-  username: {
+  prenom: {
     type: String,
     required: true,
-    minlength: 3,
-    unique: true
+    minlength: 3
+  },
+  nom: {
+    type: String,
+    required: true,
+    minlength: 3
   },
   email: {
     type: String,

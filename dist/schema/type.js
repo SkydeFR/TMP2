@@ -14,6 +14,10 @@ const typeSchema = new Schema({
   events: [{
     type: Schema.ObjectId,
     ref: 'Event'
+  }],
+  destinations: [{
+    type: Schema.ObjectId,
+    ref: 'Destination'
   }]
 });
 /**

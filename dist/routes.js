@@ -6,9 +6,15 @@ const users = require('./handlers/users');
 
 const admin = require('./handlers/admin');
 
-module.exports = function (app, opts) {
+const types = require('./handlers/types');
+
+const destinations = require('./handlers/destinations');
+
+module.exports = function (app) {
   // Setup routes, middleware, and handlers
   app.use('/users', users);
   app.use('/events', events);
-  app.use('/admin', admin); // app.get('/configured', configured(opts));
+  app.use('/admin', admin);
+  app.use('/types', types);
+  app.use('/destinations', destinations); // app.get('/configured', configured(opts));
 };

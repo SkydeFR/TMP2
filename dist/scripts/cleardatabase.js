@@ -4,7 +4,10 @@
  * @type {Model}
  */
 const {
-  User
+  User,
+  Type,
+  Event,
+  Destination
 } = require('../schema');
 
 const readline = require('readline');
@@ -18,14 +21,19 @@ const rl = readline.createInterface({
 rl.question('Êtes-vous sûr de vouloir vider la base de données ? [y/N] ', answer => {
   if (answer.toUpperCase() === 'Y') {
     console.log('Suppression en cours...');
-    mongooseconnect().then(() => {
-      User.deleteMany({}, err => {
-        if (err) console.error('An error occured during users cleaning : ', err);else {
-          console.log('La base de données a été vidée.');
-          rl.close();
-          process.exit(0);
-        }
-      });
+    mongooseconnect().then(async () => {
+      try {
+        await User.deleteMany({});
+        await Type.deleteMany({});
+        await Event.deleteMany({});
+        await Destination.deleteMany({});
+        console.log('La base de données a été vidée.');
+      } catch (err) {
+        console.error('An error occured during cleaning : ', err);
+      } finally {
+        rl.close();
+        process.exit(0);
+      }
     }).catch(err => {
       console.error('An error occured during MongoDB connection : ', err);
     });

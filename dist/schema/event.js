@@ -15,7 +15,7 @@ const eventSchema = new Schema({
     required: true,
     ref: 'Destination'
   },
-  utilisateur: {
+  user: {
     type: Schema.ObjectId,
     required: true,
     ref: 'User'
