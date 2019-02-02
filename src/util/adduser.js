@@ -48,9 +48,6 @@ module.exports = ({prenom, nom, email, password, phone}) => new Promise(async (r
             resolve(_user);
         });
       }
-      else if(result.username === user.username) {
-        reject({code: 400, text: 'used_username'});
-      }
       else if(result.email === user.email) {
         reject({code: 400, text: 'used_email'});
       }
