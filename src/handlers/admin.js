@@ -145,6 +145,9 @@ router.post('/destinations/add', (req, res) => {
     else if(!fin) {
       res.status(400).json({code: 'invalid_end_date'});
     }
+    else if(debut > fin) {
+      res.status(400).json({code: 'end_before_start'});
+    }
     else {
       Destination.findOne({lieu: req.body.lieu}).exec()
         .then(async lieu => {
