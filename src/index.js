@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongooseconnect = require('./util/mongooseconnect');
+const cors = require('cors');
 
 mongooseconnect()
   .then(() => {
@@ -46,6 +47,8 @@ module.exports = function main (options, cb) {
 
   // Create the express app
   const app = express();
+
+  app.use(cors());
 
   // Common middleware
   // app.use(/* ... */)

@@ -123,6 +123,12 @@ router.post('/types/add', (req, res) => {
   }
 });
 
+/**
+ * Permet d'éditer un type.
+ * Paramètres :
+ * nom (String) : nouveau nom du type
+ * id (String identifiant) : Identifiant du type
+ */
 router.post('/types/edit', async (req, res) => {
   if(!req.body.nom || !req.body.id) {
     res.status(400).json({code: 'invalid_request'});
@@ -147,6 +153,11 @@ router.post('/types/edit', async (req, res) => {
   }
 });
 
+/**
+ * Supprime le type dont l'ID est passé en paramètre.
+ * Paramètres
+ * id (identifiant String) : Identifiant du type.
+ */
 router.post('/types/delete',  async (req, res) => {
   if(!req.body.id) {
     res.status(400).json({code: 'invalid_request'});
@@ -169,7 +180,32 @@ router.post('/types/delete',  async (req, res) => {
       res.status(500).json({code: 'internal_error'});
     }
   }
-})
+});
+
+router.post('/users/changeadmin', async (req, res) => {
+  if(!req.body.id) {
+    res.status(400).json({code: 'invalid_request'});
+  }
+  else if(!isValid(req.body.id)) {
+    res.status(400).json({code: 'invalid_id'});
+  }
+  else {
+    try {
+      const admin = (req.body.admin) ?? true;
+      const user = await User.findByIdAndUpdate(req.body.id, {admin}).exec();
+      if(user) {
+        res.status(200).json({code: 'success', user});
+      }
+      else {
+        res.status(404).json({code: 'internal_error'});
+      }
+    }
+    catch(error) {
+      console.error(error);
+      res.status(500).json({code: 'internal_error'});
+    }
+  }
+});
 
 /**
  * Permet d'ajouter une destination
