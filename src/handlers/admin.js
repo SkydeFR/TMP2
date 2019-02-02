@@ -123,6 +123,54 @@ router.post('/types/add', (req, res) => {
   }
 });
 
+router.post('/types/edit', async (req, res) => {
+  if(!req.body.nom || !req.body.id) {
+    res.status(400).json({code: 'invalid_request'});
+  }
+  else if(!isValid(req.body.id)){
+    res.status(400).json({code: 'invalid_id'});
+  }
+  else {
+    try {
+      const type = await Type.findByIdAndUpdate(req.body.id, {nom: req.body.nom}).exec();
+      if(type) {
+        res.status(200).json({code: 'success', type});
+      }
+      else {
+        res.status(404).json({code: 'type_not_found'});
+      }
+    }
+    catch(error) {
+      console.error(error);
+      res.status(500).json({code: 'internal_error'});
+    }
+  }
+});
+
+router.post('/types/delete',  async (req, res) => {
+  if(!req.body.id) {
+    res.status(400).json({code: 'invalid_request'});
+  }
+  else if(!isValid(req.body.id)) {
+    res.status(400).json({code: 'invalid_id'});
+  }
+  else {
+    try {
+      const type = await Type.findByIdAndDelete(req.body.id).exec();
+      if(type) {
+        res.status(200).json({code: 'success'});
+      }
+      else {
+        res.status(404).json({code: 'type_not_found'});
+      }
+    }
+    catch(error) {
+      console.error(error);
+      res.status(500).json({code: 'internal_error'});
+    }
+  }
+})
+
 /**
  * Permet d'ajouter une destination
  * Paramètres :
